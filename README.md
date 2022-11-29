@@ -1,6 +1,3 @@
----
-description: wut up lol
----
-
 # 🧱 Welcome
 
+wut up lol
