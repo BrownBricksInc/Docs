@@ -64,23 +64,84 @@ client: function()
 
 ## Event Outputs
 
-| Event                                                               | Description                                                                                                        |
-| ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| player.addHealth(amount)                                            | Add or subtract health from player.                                                                                |
-| player.serverSetSpeedSprint(speedSprint)                            | Set sprint speed of player.                                                                                        |
-| player.serverSetJumpVelocity(jumpVelocity)                          | Set jump velocity of player. Sets how high a player can jump.                                                      |
-| player.serverJump(velocity, force)                                  | Makes a player jump. If force is true then player can jump while not on the ground.                                |
-| player.serverSetCoyoteTime(coyoteTime)                              | Sets coyote time for player.                                                                                       |
-| player.serverSetFallDamage(fallDamage)                              | Sets fall damage for player.                                                                                       |
-| player.serverSetCanFly(bool)                                        | Sets whether a player can fly or not.                                                                              |
-| planet.createEntity(def, nameplate, x, y, z, angle, id, except)     | Creates entity and adds to scene.                                                                                  |
-| planet.serverSetMessage(peer, msg, duration)                        | Sets message at top of screen for given peer.                                                                      |
-| Entity: setPosition(x, y, z, angle, resetCamera)                    | Set position of entity.                                                                                            |
-| Entity: serverSetPosition(x, y, z, angle, resetCamera)              | Set position of entity.                                                                                            |
-| Entity: serverRespawn()                                             | Respawn method for entities like vehicles and players.                                                             |
-| Entity: mount(ownershipCheck, child, toggle, index)                 | Mounts/dismount an entity to another entities mount point. For example, a player sits in mount point of a vehicle. |
-| scene.setBlock(ax, ay, az, shape, type, triggerEvents, isNet)       | planet.scene.setBlock(x, y, z, 0, "bb.block.platformer.trapdoor", false);                                          |
-| BlockPhysics.unsnapSingle(container, x, y, z, isExplosion, type)    | Breaks a single block & turns into a physics block.                                                                |
-| BlockPhysics.unsnapChain(container, x, y, z, split)                 | Breaks a block as well as attached blocks & turns into a single physics chunk.                                     |
-| BlockPhysics.explosion(container, pos, centerBlock, radius, impact) | Causes an explosion by applying an impulse of magnitude "impact" at a given position and radius.                   |
+| Event                                                               | Description                                                                                                                  |
+| ------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| player.addHealth(amount)                                            | Add or subtract health from player.                                                                                          |
+| player.serverSetSpeedSprint(speedSprint)                            | Set sprint speed of player.                                                                                                  |
+| player.serverSetJumpVelocity(jumpVelocity)                          | Set jump velocity of player. Sets how high a player can jump.                                                                |
+| player.serverJump(velocity, force)                                  | Makes a player jump. If force is true then player can jump while not on the ground.                                          |
+| player.serverSetCoyoteTime(coyoteTime)                              | Sets coyote time for player.                                                                                                 |
+| player.serverSetFallDamage(fallDamage)                              | Sets fall damage for player.                                                                                                 |
+| player.serverSetCanFly(bool)                                        | Sets whether a player can fly or not.                                                                                        |
+| planet.createEntity(def, nameplate, x, y, z, angle, id, except)     | Creates entity and adds to scene.                                                                                            |
+| planet.serverSetMessage(peer, msg, duration)                        | Sets message at top of screen for given peer.                                                                                |
+| Entity: setPosition(x, y, z, angle, resetCamera)                    | Set position of entity.                                                                                                      |
+| Entity: serverSetPosition(x, y, z, angle, resetCamera)              | Set position of entity.                                                                                                      |
+| Entity: serverRespawn()                                             | Respawn method for entities like vehicles and players.                                                                       |
+| Entity: mount(ownershipCheck, child, toggle, index)                 | Mounts/dismount an entity to another entities mount point. For example, a player sits in mount point of a vehicle.           |
+| scene.setBlock(ax, ay, az, shape, type, triggerEvents, isNet)       | Places a block of a certain block type at a given coordinate.                                                                |
+| BlockPhysics.unsnapSingle(container, x, y, z, isExplosion, type)    | Breaks a single block & turns into a physics block.                                                                          |
+| BlockPhysics.unsnapChain(container, x, y, z, split)                 | Breaks a block as well as attached blocks & turns into a single physics chunk. Split should be set to false for this effect. |
+| BlockPhysics.explosion(container, pos, centerBlock, radius, impact) | Causes an explosion by applying an impulse of magnitude "impact" at a given position and radius.                             |
+
+## Event Examples
+
+#### BlockPhysics.unsnapSingle & scene.setBlock
+
+unsnapSingle is used to turn a block into a physics block. When the player touches the block, the block will be converted to a physics block and will fall to the ground.\
+\
+After 3 seconds, as long as the initial position of the trapdoor block is still unoccupied, a new trapdoor block will be placed in the original position using scene.setBlock.
+
+```javascript
+//must be server sided, at least for now until we can create an RBChunk on the client side
+getBlock("bb.block.platformer.trapdoor").addEventListener(NET_SERVER, "playerfootenter", async function({ player, x, y, z })
+{
+	var scene = player.world.scene;
+	var prvShape = scene.getShape(x, y, z);
+	
+	//"this" refers to the engine's BlockType class instance for trapdoors
+	//block's unsnapAnimation must be set to ragdoll in order to get RBChunk
+	var rbchunk = BlockPhysics.unsnapSingle(scene, x, y, z, false, this);
+	
+	//make block spin randomly. clients will not see this!
+	rbchunk.phys.setAngularVelocity((Math.random() - 0.5) * 10, (Math.random() - 0.5) * 10, (Math.random() - 0.5) * 10);
+	
+	await wait(3);
+	
+	//only build a new trapdoor if the spot is still empty
+	if(scene.getShape(x, y, z) === BLOCK_AIR)
+	{
+		if(!rbchunk.disposed)
+			rbchunk.dispose();
+		
+		scene.setBlock(x, y, z, prvShape, this.name, true);
+	}
+});
+```
+
+#### BlockPhysics.unsnapChain
+
+Will convert all attached physics enabled blocks to physics objects that will fall with gravity.
+
+```javascript
+//must be server sided, at least for now until we can create an RBChunk on the client side
+getBlock("bb.block.platformer.chaintrapdoor").addEventListener(NET_SERVER, "playerfootenter", async function({ player, x, y, z })
+{
+	var scene = player.world.scene;
+	var prvShape = scene.getShape(x, y, z);
+	
+	var rbchunk = BlockPhysics.unsnapChain(scene, x, y, z, false);
+				
+	await wait(3);
+	
+	//only build a new trapdoor if the spot is still empty
+	if(scene.getShape(x, y, z) === BLOCK_AIR)
+	{
+		if(!rbchunk.disposed)
+			rbchunk.dispose();
+		
+		scene.setBlock(x, y, z, prvShape, this.name, true);
+	}
+});
+```
 
