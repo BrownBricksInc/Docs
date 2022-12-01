@@ -145,3 +145,34 @@ getBlock("bb.block.platformer.chaintrapdoor").addEventListener(NET_SERVER, "play
 });
 ```
 
+#### BlockPhyics.explosion
+
+```javascript
+getBlock("bb.block.platformer.landmine").addEventListener(NET_SERVER, "playerfootenter", async function({ player, x, y, z })
+{
+	var radius = 5; // radius of explosion
+	var impact = 100000; // each block has a maxImpact property, the explosion must be greater in order to destroy the block
+	var explosionPos = new Vector3(x,y,z); // position of explosion
+
+	var scene = player.world.scene;			
+	
+	player.world.hudPopup.set(null, 'BOOM!', 2);
+	player.addHealth(-(player.health/2)); // do damage to player
+
+	BlockPhysics.explosion(scene, explosionPos, explosionPos, 5, impact);
+	// second explosion makes blocks go flying
+	BlockPhysics.explosion(scene, explosionPos, explosionPos, 5, impact);
+});
+```
+
+#### planet.createEntity
+
+example found in _src/mods/defs/BlocksSpawners.js_
+
+```javascript
+getBlock("bb.block.spawner.ketchupkar").addEventListener(NET_SERVER, "build", async function({ container, x, y, z })
+{
+	container.world.createEntity("VehicleBroncoRed", null, x + 0.5, y + 6, z + 0.5);
+});
+```
+
