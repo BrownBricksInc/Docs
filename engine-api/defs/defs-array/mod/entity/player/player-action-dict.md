@@ -1,9 +1,9 @@
-# Player Actions Dict
+# Player Action Dict
 
 Values for actions must match the names of the animations in the player 3D model.
 
 ```
-actions:
+action:
 {
 	placeBlock: "PLACING",
 	removeBlock: "DELETING",

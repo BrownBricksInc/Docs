@@ -9,7 +9,7 @@
  * 
  * three.js options that may be changed on each playback
  * https://threejs.org/docs/?q=audio#api/en/audio/Audio
- * OPT Number volume [1] - Additive
+ * OPT Number volume [1] - Multiplicative
  * OPT Number detune [0] - Additive
  * OPT Number playbackRate [1] - Multiplicative
  * OPT Number refDistance [1] - Additive, 3D only

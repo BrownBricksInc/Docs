@@ -20,28 +20,35 @@ description: Allows a user to add text to the game that can be used for labels, 
 | faceCamera      | false                                                                                                                                                                                                                              | Optionally always angle the text towards the camera |
 | transform       | [defTransform](defs/utilities/transform-deftransform.md)                                                                                                                                                                           | defTransform options for obj                        |
 
+### "recips" arg
+
+* recips can either be an array of peers OR the string "all"
+* add null to recips array to send to server host
+* using "all" for recips will also send the vfx to new peers as they connect
+
 ### Adding Text
 
 After adding text, the text VFX id will be returned.
 
 ```javascript
-DEBUG.BB.planet.vfx.serverAdd("text", "all",
+DEBUG.BB.planet.vfx.serverAdd("all", "text",
+{
+	font: "'Arial', sans-serif",
+	fontSize: 50,
+	backgroundColor: "#FF0000FF",
+	fontColor: "#00FF01",
+	margin: 30,
+	linePadding: 10,
+	radius: 10,
+	faceCamera: true,
+	transform:
 	{
-		font: "'Arial', sans-serif",
-		fontSize: 50,
-		backgroundColor: "#FF0000FF",
-		fontColor: "#00FF01",
-		margin: 30,
-		linePadding: 10,
-		radius: 10,
-		faceCamera: true,
-		transform:
-		{
-			pos: DEBUG.BB.planet.player.position,
-			rot: new DEBUG.Euler(0, Math.PI, 0)
-		}
-	},
-	"Oh, you think darkness is your ally.\n But you merely adopted the dark;\n I was born in it"
+		pos: DEBUG.BB.planet.player.position,
+		rot: new DEBUG.Euler(0, Math.PI, 0)
+	}
+},
+
+"Oh, you think darkness is your ally.\n But you merely adopted the dark;\n I was born in it"
 ); // returns text id
 ```
 
