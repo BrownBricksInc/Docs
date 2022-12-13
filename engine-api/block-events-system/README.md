@@ -16,15 +16,23 @@ NetEventDispatcher.prototype.addEventListener(NET_SERVER or NET_CLIENT, "eventna
 });
 ```
 
-BlockType extends NetEventDispatcher
+Block event listeners - dispatches in this order
 
-| Event           | Description                                                                                                                                                      | Parameters                                           |
-| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
-| playerfootenter | Triggered when a player steps on top of a block.                                                                                                                 | player, x, y, z                                      |
-| playerfootleave | Triggered when a player stops standing on a block.                                                                                                               | player, x, y, z                                      |
-| build           | Block’s shape was set to something other than air. If a block's type instantly changes (without breaking it first), both break and build will fire in that order | container: either ChunkScene **or** RBChunk, x, y, z |
-| break           | Block’s shape was set to something other than air. If a block's type instantly changes (without breaking it first), both break and build will fire in that order | container: either ChunkScene **or** RBChunk, x, y, z |
-| sculpt          | Block’s shape was set to air. If a block's type instantly changes (without breaking it first), both break and build will fire in that order                      | container: either ChunkScene **or** RBChunk, x, y, z |
+NetEventListener scene.globalBlockEvents - apply an event to all blocks
+
+BlockType extends NetEventListener - apply an event to all blocks of a specific type
+
+scene.setBlockEvent(ax, ay, az, side, type, code, isNet) - apply an event to an individual block
+
+| Event           | Description                                                                                                                                                      | Parameters                                                                                                           |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| playerfootenter | Triggered when a player steps on top of a block.                                                                                                                 | player, x, y, z                                                                                                      |
+| playerfootleave | Triggered when a player stops standing on a block.                                                                                                               | player, x, y, z                                                                                                      |
+| build           | Block’s shape was set to something other than air. If a block's type instantly changes (without breaking it first), both break and build will fire in that order | <p>container: either ChunkScene <strong>or</strong> RBChunk,</p><p>x, y, z</p>                                       |
+| break           | Block’s shape was set to something other than air. If a block's type instantly changes (without breaking it first), both break and build will fire in that order | <p>container: either ChunkScene <strong>or</strong> RBChunk,</p><p>x, y, z</p>                                       |
+| sculpt          | Block’s shape was set to air. If a block's type instantly changes (without breaking it first), both break and build will fire in that order                      | <p>container: either ChunkScene <strong>or</strong> RBChunk,</p><p>x, y, z</p>                                       |
+| impact          | Triggered when an impulse is applied to this block, either by a rigid body, projectile, or explosion                                                             | <p>container: either ChunkScene <strong>or</strong> RBChunk,<br>x, y, z,<br>impact (Vector3),<br>isExplosion<br></p> |
+| metadata        | Triggered by a change in a block's metadata. Server-side only.                                                                                                   | <p>container: either ChunkScene <strong>or</strong> RBChunk,<br>x, y, z,<br>key, value,<br>prvValue</p>              |
 
 Planet extends NetEventDispatcher
 
