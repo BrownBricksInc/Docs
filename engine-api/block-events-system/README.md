@@ -43,9 +43,9 @@ Planet extends NetEventDispatcher
 
 NetEventDispatcher entity.dispatcher
 
-| Subclass | Event | Description                                                      | Parameters                                |
-| -------- | ----- | ---------------------------------------------------------------- | ----------------------------------------- |
-| Item     | use   | Triggers when mouse is pressed or released while holding an item | toggle: whether or not item is being used |
+| Subclass | Event | Description                                                                                     | Parameters                                |
+| -------- | ----- | ----------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| Item     | use   | Triggers when mouse is pressed or released while holding an item. Triggers on client side only. | toggle: whether or not item is being used |
 
 ### Adding an event to a block
 
