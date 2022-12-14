@@ -18,7 +18,7 @@ NetEventDispatcher.prototype.addEventListener(NET_SERVER or NET_CLIENT, "eventna
 
 Block event listeners - dispatches in this order
 
-NetEventListener scene.globalBlockEvents - apply an event to all blocks
+NetEventListener scene.globalBlockDispatcher - apply an event to all blocks
 
 BlockType extends NetEventListener - apply an event to all blocks of a specific type
 
