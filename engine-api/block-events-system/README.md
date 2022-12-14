@@ -24,21 +24,28 @@ BlockType extends NetEventListener - apply an event to all blocks of a specific 
 
 scene.setBlockEvent(ax, ay, az, side, type, code, isNet) - apply an event to an individual block
 
-| Event           | Description                                                                                                                                                         | Parameters                                                                                                           |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| playerfootenter | Triggered when a player steps on top of a block.                                                                                                                    | player, x, y, z                                                                                                      |
-| playerfootleave | Triggered when a player stops standing on a block.                                                                                                                  | player, x, y, z                                                                                                      |
-| build           | Block’s shape was set to something other than air. If a block's type instantly changes (without breaking it first), both break and build will fire in that order    | <p>container: either ChunkScene <strong>or</strong> RBChunk,</p><p>x, y, z</p>                                       |
-| break           | Block’s shape was set to something other than air. If a block's type instantly changes (without breaking it first), both break and build will fire in that order    | <p>container: either ChunkScene <strong>or</strong> RBChunk,</p><p>x, y, z</p>                                       |
-| sculpt          | Block’s shape was set to air. If a block's type instantly changes (without breaking it first), both break and build will fire in that order                         | <p>container: either ChunkScene <strong>or</strong> RBChunk,</p><p>x, y, z</p>                                       |
-| impact          | Triggered when an impulse is applied to this block, either by a rigid body, projectile, or explosion                                                                | <p>container: either ChunkScene <strong>or</strong> RBChunk,<br>x, y, z,<br>impact (Vector3),<br>isExplosion<br></p> |
-| metadata        | Triggered by a change in a block's metadata. Server-side only. The event does not fire when metadata is removed due to block deletion; use the break event instead. | <p>container: either ChunkScene <strong>or</strong> RBChunk,<br>x, y, z,<br>key, value,<br>prvValue</p>              |
+| Event           | Description                                                                                                                                                         | Parameters                                                                                                          |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| playerfootenter | Triggered when a player steps on top of a block.                                                                                                                    | player, x, y, z                                                                                                     |
+| playerfootleave | Triggered when a player stops standing on a block.                                                                                                                  | player, x, y, z                                                                                                     |
+| build           | Block’s shape was set to something other than air. If a block's type instantly changes (without breaking it first), both break and build will fire in that order    | <p>container: either ChunkScene <strong>or</strong> RBChunk,</p><p>x, y, z</p>                                      |
+| break           | Block’s shape was set to something other than air. If a block's type instantly changes (without breaking it first), both break and build will fire in that order    | <p>container: either ChunkScene <strong>or</strong> RBChunk,</p><p>x, y, z</p>                                      |
+| sculpt          | Block’s shape was set to air. If a block's type instantly changes (without breaking it first), both break and build will fire in that order                         | <p>container: either ChunkScene <strong>or</strong> RBChunk,</p><p>x, y, z</p>                                      |
+| impact          | Triggered when an impulse is applied to this block, either by a rigid body, projectile, or explosion                                                                | <p>container: either ChunkScene <strong>or</strong> RBChunk,<br>x, y, z,<br>impact: Vector3,<br>isExplosion<br></p> |
+| metadata        | Triggered by a change in a block's metadata. Server-side only. The event does not fire when metadata is removed due to block deletion; use the break event instead. | <p>container: either ChunkScene <strong>or</strong> RBChunk,<br>x, y, z,<br>key, value,<br>prvValue</p>             |
 
 Planet extends NetEventDispatcher
 
-| Event | Description                                                                                             |   |
-| ----- | ------------------------------------------------------------------------------------------------------- | - |
-| frame | Fires at the end of each frame. Only use this as a last case resort if you can’t find a better solution |   |
+| Event        | Description                                                                                             | Parameters |
+| ------------ | ------------------------------------------------------------------------------------------------------- | ---------- |
+| frame        | Fires at the end of each frame. Only use this as a last case resort if you can’t find a better solution |            |
+| createentity | It does what you think it does                                                                          | entity     |
+
+NetEventDispatcher entity.dispatcher
+
+| Subclass | Event | Description                                                      | Parameters                                |
+| -------- | ----- | ---------------------------------------------------------------- | ----------------------------------------- |
+| Item     | use   | Triggers when mouse is pressed or released while holding an item | toggle: whether or not item is being used |
 
 ### Adding an event to a block
 
